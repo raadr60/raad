@@ -3,35 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام جسور وركن</title>
+    <title>نظام إدارة جسور وركن</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; text-align: center; }
-        .card { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     </style>
 </head>
 <body>
+
+<div class="container" id="loginScreen">
+    <div class="card">
+        <h2>تسجيل الدخول</h2>
+        <input type="password" id="pass" placeholder="أدخل الرمز السري">
+        <button onclick="checkLogin()">دخول</button>
+    </div>
+</div>
+
+<div class="container" id="appScreen" style="display:none;">
     <div class="card">
         <h2>إضافة رحلة جديدة</h2>
         <input type="text" id="driver" placeholder="اسم السائق">
         <input type="number" id="revenue" placeholder="الإيراد">
-        <button onclick="saveData()">حفظ العملية</button>
+        <button onclick="saveData()">حفظ الرحلة</button>
     </div>
+    <div class="card">
+        <h3>الرحلات المسجلة</h3>
+        <table id="tripsTable">
+            <tr><th>السائق</th><th>الإيراد</th></tr>
+        </table>
+    </div>
+</div>
 
-    <script>
-        const supabase = supabase.createClient('https://rkabgggresuqcncujdwm.supabase.co/rest/v1/', 'sb_publishable_GZh71t88deBXJaE-19LwCw_EeCrPUKj');
+<script>
+    const supabase = supabase.createClient('https://rkabgggresuqcncujdwm.supabase.co', 'sb_publishable_GZh71t88deBXJaE-19LwCw_EeCrPUKj');
 
-        async function saveData() {
-            const driver = document.getElementById('driver').value;
-            const rev = document.getElementById('revenue').value;
-            
-            const { error } = await supabase.from('trips').insert([{ driver_name: driver, revenue: rev }]);
-            
-            if (error) alert('خطأ: ' + error.message);
-            else alert('تم الحفظ بنجاح!');
-        }
-    </script>
+    function checkLogin() {
+        if (document.getElementById('pass').value === "1234") { // يمكنك تغيير الرمز هنا
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            fetchTrips();
+        } else { alert("رمز خاطئ!"); }
+    }
+
+    async function saveData() {
+        const driver = document.getElementById('driver').value;
+        const rev = document.getElementById('revenue').value;
+        const { error } = await supabase.from('trips').insert([{ driver_name: driver, revenue: rev }]);
+        if (error) alert(error.message);
+        else { alert('تم الحفظ!'); fetchTrips(); }
+    }
+
+    async function fetchTrips() {
+        const { data } = await supabase.from('trips').select('*');
+        const table = document.getElementById('tripsTable');
+        table.innerHTML = '<tr><th>السائق</th><th>الإيراد</th></tr>';
+        data.forEach(row => {
+            table.innerHTML += `<tr><td>${row.driver_name}</td><td>${row.revenue}</td></tr>`;
+        });
+    }
+</script>
 </body>
 </html>
