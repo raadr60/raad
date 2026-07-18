@@ -46,14 +46,10 @@
 
  function checkLogin() {
     var passValue = document.getElementById('pass').value;
-    if (passValue === "737125") {
+    if (passValue === "737125") } {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('appScreen').style.display = 'block';
-        alert("تم الدخول بنجاح");
-    } else {
-        alert("رمز خاطئ");
-    }
-}
+        alert("تم الدخول بنجاح");}
 
     async function saveData() {
         const driver = document.getElementById('driver').value;
