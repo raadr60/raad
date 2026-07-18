@@ -44,13 +44,16 @@
     const supabase = supabase.createClient
         ('https://rkabgggresuqcncujdwm.supabase.co','sb_publishable_GZh71t88deBXJaE-19LwCw_EeCrPUKj');
 
-    function checkLogin() {
-        if (document.getElementById('pass').value === "737125") { // يمكنك تغيير الرمز هنا
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('appScreen').style.display = 'block';
-            fetchTrips();
-        } else { alert("رمز خاطئ!"); }
+ function checkLogin() {
+    var passValue = document.getElementById('pass').value;
+    if (passValue === "737125") {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appScreen').style.display = 'block';
+        alert("تم الدخول بنجاح");
+    } else {
+        alert("رمز خاطئ");
     }
+}
 
     async function saveData() {
         const driver = document.getElementById('driver').value;
